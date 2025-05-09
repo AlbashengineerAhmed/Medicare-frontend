@@ -297,15 +297,30 @@ const DoctorProfile = () => {
     try {
       setLoading(true);
 
+      // Make sure we're not already loading
+      if (loading) {
+        return;
+      }
+
       const result = await appointmentService.updateAppointmentStatus(appointmentId, status);
 
       if (result.success) {
         toast.success(`Appointment ${status} successfully!`);
+        // Update the appointment in the local state to avoid a full refetch
+        setAppointments(prevAppointments =>
+          prevAppointments.map(appointment =>
+            appointment._id === appointmentId
+              ? { ...appointment, status }
+              : appointment
+          )
+        );
+        // Also fetch appointments to ensure data is fresh
         fetchAppointments();
       } else {
-        toast.error(result.message);
+        toast.error(result.message || 'Failed to update appointment status');
       }
     } catch (error) {
+      console.error('Error updating appointment status:', error);
       toast.error('Failed to update appointment status. Please try again.');
     } finally {
       setLoading(false);
@@ -1056,12 +1071,12 @@ const DoctorProfile = () => {
 
               {/* Professional Info Tab */}
               {activeTab === 'professional' && (
-                <div className="shadow-lg p-3 lg:p-5 rounded-lg border border-gray-100 bg-white">
+                <div className="shadow-lg p-3 lg:p-5 rounded-lg border border-gray-100 bg-white overflow-x-hidden">
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="bg-blue-100 p-3 rounded-full">
+                    <div className="bg-blue-100 p-3 rounded-full flex-shrink-0">
                       <FaGraduationCap className="text-primaryColor text-xl" />
                     </div>
-                    <h3 className="text-[22px] leading-[30px] text-headingColor font-bold">
+                    <h3 className="text-[20px] sm:text-[22px] leading-[28px] sm:leading-[30px] text-headingColor font-bold">
                       Professional Information
                     </h3>
                   </div>
@@ -1069,33 +1084,33 @@ const DoctorProfile = () => {
                   {/* About Section */}
                   <div className="mb-8">
                     <div className="flex items-center gap-2 mb-4">
-                      <div className="bg-blue-50 p-2 rounded-full">
+                      <div className="bg-blue-50 p-2 rounded-full flex-shrink-0">
                         <FaInfoCircle className="text-primaryColor" />
                       </div>
-                      <h4 className="text-[18px] leading-7 text-headingColor font-semibold">
+                      <h4 className="text-[16px] sm:text-[18px] leading-6 sm:leading-7 text-headingColor font-semibold">
                         About & Bio
                       </h4>
                     </div>
 
-                    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-100 overflow-x-auto">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6">
                         <div>
-                          <label className="text-headingColor font-semibold mb-2 flex items-center gap-2">
-                            <FaStethoscope className="text-primaryColor" /> Specialization
+                          <label className="text-headingColor font-semibold mb-2 flex items-center gap-2 text-[14px] sm:text-base">
+                            <FaStethoscope className="text-primaryColor flex-shrink-0" /> Specialization
                           </label>
                           <input
                             type="text"
                             name="specialization"
                             value={formData.specialization}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-3 border border-solid border-[#0066ff61] focus:outline-none focus:border-primaryColor text-[16px] leading-7 text-headingColor rounded-lg bg-gray-50"
+                            className="w-full px-4 py-3 border border-solid border-[#0066ff61] focus:outline-none focus:border-primaryColor text-[14px] sm:text-[16px] leading-6 sm:leading-7 text-headingColor rounded-lg bg-gray-50"
                             placeholder="e.g. Cardiology, Neurology"
                           />
                         </div>
 
                         <div>
-                          <label className="text-headingColor font-semibold mb-2 flex items-center gap-2">
-                            <FaMoneyBillAlt className="text-primaryColor" /> Consultation Fee
+                          <label className="text-headingColor font-semibold mb-2 flex items-center gap-2 text-[14px] sm:text-base">
+                            <FaMoneyBillAlt className="text-primaryColor flex-shrink-0" /> Consultation Fee
                           </label>
                           <div className="relative">
                             <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
@@ -1104,7 +1119,7 @@ const DoctorProfile = () => {
                               name="ticketPrice"
                               value={formData.ticketPrice}
                               onChange={handleInputChange}
-                              className="w-full px-4 py-3 pl-8 border border-solid border-[#0066ff61] focus:outline-none focus:border-primaryColor text-[16px] leading-7 text-headingColor rounded-lg bg-gray-50"
+                              className="w-full px-4 py-3 pl-8 border border-solid border-[#0066ff61] focus:outline-none focus:border-primaryColor text-[14px] sm:text-[16px] leading-6 sm:leading-7 text-headingColor rounded-lg bg-gray-50"
                               placeholder="100"
                             />
                           </div>
@@ -1112,8 +1127,8 @@ const DoctorProfile = () => {
                       </div>
 
                       <div className="mb-6">
-                        <label className="text-headingColor font-semibold mb-2 flex items-center gap-2">
-                          <FaInfoCircle className="text-primaryColor" /> Short Bio (max 50 characters)
+                        <label className="text-headingColor font-semibold mb-2 flex items-center gap-2 text-[14px] sm:text-base">
+                          <FaInfoCircle className="text-primaryColor flex-shrink-0" /> Short Bio (max 50 characters)
                         </label>
                         <input
                           type="text"
@@ -1121,7 +1136,7 @@ const DoctorProfile = () => {
                           value={formData.bio}
                           onChange={handleInputChange}
                           maxLength={50}
-                          className="w-full px-4 py-3 border border-solid border-[#0066ff61] focus:outline-none focus:border-primaryColor text-[16px] leading-7 text-headingColor rounded-lg bg-gray-50"
+                          className="w-full px-4 py-3 border border-solid border-[#0066ff61] focus:outline-none focus:border-primaryColor text-[14px] sm:text-[16px] leading-6 sm:leading-7 text-headingColor rounded-lg bg-gray-50"
                           placeholder="Brief professional bio shown on your profile card"
                         />
                         <div className="text-right text-xs text-gray-500 mt-1">
@@ -1130,25 +1145,25 @@ const DoctorProfile = () => {
                       </div>
 
                       <div>
-                        <label className="text-headingColor font-semibold mb-2 flex items-center gap-2">
-                          <FaFileAlt className="text-primaryColor" /> Detailed About Me
+                        <label className="text-headingColor font-semibold mb-2 flex items-center gap-2 text-[14px] sm:text-base">
+                          <FaFileAlt className="text-primaryColor flex-shrink-0" /> Detailed About Me
                         </label>
                         <textarea
                           name="about"
                           value={formData.about}
                           onChange={handleInputChange}
                           rows={5}
-                          className="w-full px-4 py-3 border border-solid border-[#0066ff61] focus:outline-none focus:border-primaryColor text-[16px] leading-7 text-headingColor rounded-lg bg-gray-50"
+                          className="w-full px-4 py-3 border border-solid border-[#0066ff61] focus:outline-none focus:border-primaryColor text-[14px] sm:text-[16px] leading-6 sm:leading-7 text-headingColor rounded-lg bg-gray-50"
                           placeholder="Detailed information about your professional background, approach to patient care, and areas of expertise"
                         />
                       </div>
 
-                      <div className="mt-6 flex justify-end">
+                      <div className="mt-6 flex justify-center sm:justify-end">
                         <button
                           onClick={handleSubmit}
-                          className="bg-primaryColor text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+                          className="bg-primaryColor text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
                         >
-                          <FaSave /> Save Changes
+                          <FaSave className="flex-shrink-0" /> Save Changes
                         </button>
                       </div>
                     </div>
@@ -1156,20 +1171,20 @@ const DoctorProfile = () => {
 
                   {/* Education Section */}
                   <div className="mb-8">
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
                       <div className="flex items-center gap-2">
-                        <div className="bg-blue-50 p-2 rounded-full">
+                        <div className="bg-blue-50 p-2 rounded-full flex-shrink-0">
                           <FaGraduationCap className="text-primaryColor" />
                         </div>
-                        <h4 className="text-[18px] leading-7 text-headingColor font-semibold">
+                        <h4 className="text-[16px] sm:text-[18px] leading-6 sm:leading-7 text-headingColor font-semibold">
                           Education & Qualifications
                         </h4>
                       </div>
                       <button
                         onClick={() => setShowEducationModal(true)}
-                        className="bg-primaryColor text-white py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-blue-600 transition-colors shadow-sm"
+                        className="bg-primaryColor text-white py-2 px-4 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-600 transition-colors shadow-sm"
                       >
-                        <div className="bg-blue-600 p-1 rounded-full">
+                        <div className="bg-blue-600 p-1 rounded-full flex-shrink-0">
                           <FaPlus className="text-white text-xs" />
                         </div>
                         <span className="font-medium">Add Qualification</span>
@@ -1248,20 +1263,20 @@ const DoctorProfile = () => {
 
                   {/* Experience Section */}
                   <div className="mb-8">
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
                       <div className="flex items-center gap-2">
-                        <div className="bg-blue-50 p-2 rounded-full">
+                        <div className="bg-blue-50 p-2 rounded-full flex-shrink-0">
                           <FaBriefcase className="text-primaryColor" />
                         </div>
-                        <h4 className="text-[18px] leading-7 text-headingColor font-semibold">
+                        <h4 className="text-[16px] sm:text-[18px] leading-6 sm:leading-7 text-headingColor font-semibold">
                           Professional Experience
                         </h4>
                       </div>
                       <button
                         onClick={() => setShowExperienceModal(true)}
-                        className="bg-primaryColor text-white py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-blue-600 transition-colors shadow-sm"
+                        className="bg-primaryColor text-white py-2 px-4 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-600 transition-colors shadow-sm"
                       >
-                        <div className="bg-blue-600 p-1 rounded-full">
+                        <div className="bg-blue-600 p-1 rounded-full flex-shrink-0">
                           <FaPlus className="text-white text-xs" />
                         </div>
                         <span className="font-medium">Add Experience</span>
@@ -1345,21 +1360,21 @@ const DoctorProfile = () => {
                     <button
                       onClick={handleSubmit}
                       disabled={loading}
-                      className="w-full bg-primaryColor text-white text-[18px] leading-[30px] rounded-lg px-6 py-4 flex items-center justify-center gap-2 hover:bg-blue-600 transition-colors shadow-md"
+                      className="w-full bg-primaryColor text-white text-[16px] sm:text-[18px] leading-[26px] sm:leading-[30px] rounded-lg px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-center gap-2 hover:bg-blue-600 transition-colors shadow-md"
                     >
                       {loading ? (
                         <div className="flex items-center gap-3">
-                          <HashLoader size={25} color="#ffffff" />
+                          <HashLoader size={20} color="#ffffff" />
                           <span>Saving Changes...</span>
                         </div>
                       ) : (
                         <>
-                          <FaSave className="text-xl" />
+                          <FaSave className="text-lg sm:text-xl flex-shrink-0" />
                           <span>Save All Changes</span>
                         </>
                       )}
                     </button>
-                    <p className="text-center text-gray-500 text-sm mt-3">
+                    <p className="text-center text-gray-500 text-xs sm:text-sm mt-3">
                       All your profile information will be saved securely
                     </p>
                   </div>

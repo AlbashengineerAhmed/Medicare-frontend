@@ -6,6 +6,7 @@ const Home = lazy(() => import("../pages/Home"));
 const Services = lazy(() => import("../pages/Services"));
 const Login = lazy(() => import("../pages/Login"));
 const Signup = lazy(() => import("../pages/Signup"));
+const ForgotPassword = lazy(() => import("../pages/ForgotPassword"));
 const Contact = lazy(() => import("../pages/Contact"));
 const Doctors = lazy(() => import("../pages/Doctors/Doctors"));
 const DoctorsDetails = lazy(() => import("../pages/Doctors/DoctorsDetails"));
@@ -86,6 +87,7 @@ const Routers = () => {
       <Route path='/doctors/:id' element={withSuspense(<DoctorsDetails />)} />
       <Route path='/login' element={withSuspense(<Login />)} />
       <Route path='/register' element={withSuspense(<Signup />)} />
+      <Route path='/forgot-password' element={withSuspense(<ForgotPassword />)} />
       <Route path='/contact' element={withSuspense(<Contact />)} />
       <Route path='/services' element={withSuspense(<Services />)} />
 

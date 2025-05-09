@@ -62,6 +62,11 @@ const AppointmentManagement = () => {
   // Handle appointment status update
   const handleStatusUpdate = async (appointmentId, status) => {
     try {
+      // Prevent multiple clicks
+      if (loading) {
+        return;
+      }
+
       setLoading(true);
 
       const result = await adminService.updateAppointmentStatus(appointmentId, status);
@@ -76,11 +81,23 @@ const AppointmentManagement = () => {
           )
         );
 
-        setShowModal(false);
+        // Also update the selected appointment if it's open in the modal
+        if (selectedAppointment && selectedAppointment._id === appointmentId) {
+          setSelectedAppointment({
+            ...selectedAppointment,
+            status
+          });
+        }
+
+        // Close the modal only after state is updated
+        setTimeout(() => {
+          setShowModal(false);
+        }, 500);
       } else {
         toast.error(result.message || `Failed to update appointment status`);
       }
     } catch (error) {
+      console.error('Error updating appointment status:', error);
       toast.error('Failed to update appointment status. Please try again.');
     } finally {
       setLoading(false);
