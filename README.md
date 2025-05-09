@@ -4,9 +4,9 @@
 
 Medicare is a comprehensive MERN stack application designed to streamline the process of booking medical appointments. The platform connects patients with healthcare providers, allowing for efficient scheduling, management of medical records, and seamless communication between doctors and patients.
 
-![Doctors](https://github.com/AlbashengineerAhmed/Medicare-frontend/Demo/Doctors.png)
+![Doctors](Demo/Doctors.png)
 
-![Hero](https://github.com/AlbashengineerAhmed/Medicare-frontend/Demo/Hero.PNG)
+![Hero](Demo/Hero.PNG)
 
 ## ✨ Features
 
