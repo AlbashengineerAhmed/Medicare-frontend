@@ -34,27 +34,19 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   // Use the stored role if available, otherwise fall back to the context role
   const effectiveRole = storedRole || role;
 
-  console.log("Protected Route - Path:", window.location.pathname);
-  console.log("Protected Route - Context Role:", role, "Stored Role:", storedRole, "Effective Role:", effectiveRole, "Allowed Roles:", allowedRoles);
-
   // Special case for doctor profile
   if (window.location.pathname === '/doctor/profile' && storedRole === 'doctor') {
-    console.log("Doctor accessing doctor profile - allowing access");
     return children;
   }
 
   if (!token) {
-    console.log("No token, redirecting to login");
     return <Navigate to="/login" replace />;
   }
 
   // Check if the user has a valid role
   if (allowedRoles && !allowedRoles.includes(effectiveRole)) {
-    console.log("Role not allowed, redirecting to home");
-
     // If it's a doctor trying to access their profile but the role check failed
     if (window.location.pathname === '/doctor/profile' && effectiveRole === 'doctor') {
-      console.log("Doctor role detected but role check failed - allowing access anyway");
       return children;
     }
 

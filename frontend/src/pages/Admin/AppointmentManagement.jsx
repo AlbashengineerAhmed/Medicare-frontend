@@ -413,14 +413,28 @@ const AppointmentManagement = () => {
                     <button
                       onClick={() => handleStatusUpdate(selectedAppointment._id, 'confirmed')}
                       className="flex-1 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 flex items-center justify-center"
+                      disabled={loading}
                     >
-                      <FaCheck className="mr-1" /> Confirm
+                      {loading ? (
+                        <HashLoader size={20} color="#ffffff" />
+                      ) : (
+                        <>
+                          <FaCheck className="mr-1" /> Confirm
+                        </>
+                      )}
                     </button>
                     <button
                       onClick={() => handleStatusUpdate(selectedAppointment._id, 'cancelled')}
                       className="flex-1 bg-red-500 text-white py-2 rounded-md hover:bg-red-600 flex items-center justify-center"
+                      disabled={loading}
                     >
-                      <FaTimes className="mr-1" /> Cancel
+                      {loading ? (
+                        <HashLoader size={20} color="#ffffff" />
+                      ) : (
+                        <>
+                          <FaTimes className="mr-1" /> Cancel
+                        </>
+                      )}
                     </button>
                   </div>
                 )}
@@ -430,14 +444,28 @@ const AppointmentManagement = () => {
                     <button
                       onClick={() => handleStatusUpdate(selectedAppointment._id, 'completed')}
                       className="flex-1 bg-green-500 text-white py-2 rounded-md hover:bg-green-600 flex items-center justify-center"
+                      disabled={loading}
                     >
-                      <FaCheck className="mr-1" /> Mark as Completed
+                      {loading ? (
+                        <HashLoader size={20} color="#ffffff" />
+                      ) : (
+                        <>
+                          <FaCheck className="mr-1" /> Mark as Completed
+                        </>
+                      )}
                     </button>
                     <button
                       onClick={() => handleStatusUpdate(selectedAppointment._id, 'cancelled')}
                       className="flex-1 bg-red-500 text-white py-2 rounded-md hover:bg-red-600 flex items-center justify-center"
+                      disabled={loading}
                     >
-                      <FaTimes className="mr-1" /> Cancel
+                      {loading ? (
+                        <HashLoader size={20} color="#ffffff" />
+                      ) : (
+                        <>
+                          <FaTimes className="mr-1" /> Cancel
+                        </>
+                      )}
                     </button>
                   </div>
                 )}

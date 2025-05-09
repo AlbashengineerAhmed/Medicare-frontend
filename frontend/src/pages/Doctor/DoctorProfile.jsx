@@ -91,34 +91,24 @@ const DoctorProfile = () => {
   });
 
   useEffect(() => {
-    // Log the current state for debugging
-    console.log("DoctorProfile - Current state:", { user, token, role: localStorage.getItem('role') });
-
-    // Check if we're on the doctor profile page
-    console.log("Current path:", window.location.pathname);
-
     if (!token) {
-      console.log("No token found, redirecting to login");
       navigate('/login');
       return;
     }
 
     // Get role from localStorage for reliability
     const storedRole = localStorage.getItem('role');
-    console.log("Stored role:", storedRole);
 
     // Special case for doctor profile page
     if (window.location.pathname === '/doctor/profile' && storedRole === 'doctor') {
-      console.log("On doctor profile page with doctor role - proceeding");
+      // Proceed with doctor profile
     } else if (user?.role !== 'doctor' && storedRole !== 'doctor') {
-      console.log("Not a doctor, redirecting to profile");
       navigate('/profile');
       return;
     }
 
     // Fetch doctor data if user object is available
     if (user) {
-      console.log("Setting form data from user:", user);
       setFormData({
         name: user.name || '',
         email: user.email || '',
@@ -234,7 +224,7 @@ const DoctorProfile = () => {
             setDeletionRequestStatus(result.data);
           }
         } catch (error) {
-          console.error("Error checking deletion request status:", error);
+          // Silently handle error - no need to show to user
         }
       }
     };
@@ -859,14 +849,28 @@ const DoctorProfile = () => {
                                           <button
                                             onClick={() => handleUpdateAppointmentStatus(appointment._id, 'confirmed')}
                                             className="bg-green-500 text-white px-3 py-1 rounded-lg text-[14px] hover:bg-green-600 transition-colors flex items-center gap-1"
+                                            disabled={loading}
                                           >
-                                            <FaCheck className="text-xs" /> Confirm
+                                            {loading ? (
+                                              <HashLoader size={15} color="#ffffff" />
+                                            ) : (
+                                              <>
+                                                <FaCheck className="text-xs" /> Confirm
+                                              </>
+                                            )}
                                           </button>
                                           <button
                                             onClick={() => handleUpdateAppointmentStatus(appointment._id, 'cancelled')}
                                             className="bg-red-500 text-white px-3 py-1 rounded-lg text-[14px] hover:bg-red-600 transition-colors flex items-center gap-1"
+                                            disabled={loading}
                                           >
-                                            <FaTimes className="text-xs" /> Cancel
+                                            {loading ? (
+                                              <HashLoader size={15} color="#ffffff" />
+                                            ) : (
+                                              <>
+                                                <FaTimes className="text-xs" /> Cancel
+                                              </>
+                                            )}
                                           </button>
                                         </div>
                                       )}
@@ -874,8 +878,15 @@ const DoctorProfile = () => {
                                         <button
                                           onClick={() => handleUpdateAppointmentStatus(appointment._id, 'completed')}
                                           className="bg-blue-500 text-white px-3 py-1 rounded-lg text-[14px] hover:bg-blue-600 transition-colors flex items-center gap-1"
+                                          disabled={loading}
                                         >
-                                          <FaCheck className="text-xs" /> Complete
+                                          {loading ? (
+                                            <HashLoader size={15} color="#ffffff" />
+                                          ) : (
+                                            <>
+                                              <FaCheck className="text-xs" /> Complete
+                                            </>
+                                          )}
                                         </button>
                                       )}
                                     </div>

@@ -62,13 +62,15 @@ const getDoctorAppointments = async (doctorId) => {
 /**
  * Update appointment status
  * @param {string} appointmentId - Appointment ID
- * @param {object} statusData - Status data
+ * @param {string} status - New status (confirmed, cancelled, completed)
  * @returns {Promise<object>} - Response data
  */
-const updateAppointmentStatus = async (appointmentId, statusData) => {
+const updateAppointmentStatus = async (appointmentId, status) => {
   try {
-    return await client.put(`/appointments/${appointmentId}/status`, statusData);
+    // Make sure we're sending the status as an object with a status property
+    return await client.put(`/appointments/${appointmentId}/status`, { status });
   } catch (error) {
+    console.error('Error updating appointment status:', error);
     return {
       success: false,
       message: 'Failed to update appointment status. Please try again.',
