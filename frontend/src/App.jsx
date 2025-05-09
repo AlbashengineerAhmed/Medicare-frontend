@@ -1,4 +1,4 @@
-import "./app.css";
+import "./App.css";
 import Layout from "./layout/layout";
 import { AuthProvider } from "./context/AuthContext";
 import { AppointmentProvider } from "./context/AppointmentContext";
