@@ -2,6 +2,8 @@
  * Default avatar image URL
  * @type {string}
  */
+import { API_SERVER_URL } from '../config/api';
+
 export const DEFAULT_AVATAR = 'https://res.cloudinary.com/dotzclh4n/image/upload/v1746707126/users/default-user.jpg';
 
 /**
@@ -12,12 +14,12 @@ export const DEFAULT_AVATAR = 'https://res.cloudinary.com/dotzclh4n/image/upload
  */
 export const getImageUrl = (imageUrl, fallbackUrl = DEFAULT_AVATAR) => {
   if (!imageUrl) return fallbackUrl;
-  
+
   // Check if the image URL is a relative path
   if (imageUrl.startsWith('/uploads/')) {
-    return `http://localhost:8000${imageUrl}`;
+    return `${API_SERVER_URL}${imageUrl}`;
   }
-  
+
   return imageUrl;
 };
 
@@ -36,38 +38,38 @@ export const compressImage = (file, { maxWidth = 800, maxHeight = 800, quality =
       reject(new Error('Invalid file type. Only images are supported.'));
       return;
     }
-    
+
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    
+
     reader.onload = (event) => {
       const img = new Image();
       img.src = event.target.result;
-      
+
       img.onload = () => {
         // Calculate new dimensions
         let width = img.width;
         let height = img.height;
-        
+
         if (width > maxWidth) {
           height = Math.round((height * maxWidth) / width);
           width = maxWidth;
         }
-        
+
         if (height > maxHeight) {
           width = Math.round((width * maxHeight) / height);
           height = maxHeight;
         }
-        
+
         // Create canvas
         const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
-        
+
         // Draw image on canvas
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
-        
+
         // Convert canvas to blob
         canvas.toBlob((blob) => {
           // Create new file from blob
@@ -75,16 +77,16 @@ export const compressImage = (file, { maxWidth = 800, maxHeight = 800, quality =
             type: file.type,
             lastModified: Date.now()
           });
-          
+
           resolve(compressedFile);
         }, file.type, quality);
       };
-      
+
       img.onerror = () => {
         reject(new Error('Failed to load image.'));
       };
     };
-    
+
     reader.onerror = () => {
       reject(new Error('Failed to read file.'));
     };
@@ -100,11 +102,11 @@ export const fileToBase64 = (file) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    
+
     reader.onload = () => {
       resolve(reader.result);
     };
-    
+
     reader.onerror = (error) => {
       reject(error);
     };

@@ -1,10 +1,8 @@
 import HttpClient from './httpClient';
-
-// API base URL
-const BASE_URL = 'http://localhost:8000/api/v1';
+import { API_BASE_URL } from '../../config/api';
 
 // Create HTTP client instance
-const client = new HttpClient(BASE_URL);
+const client = new HttpClient(API_BASE_URL);
 
 /**
  * Deletion Request service
